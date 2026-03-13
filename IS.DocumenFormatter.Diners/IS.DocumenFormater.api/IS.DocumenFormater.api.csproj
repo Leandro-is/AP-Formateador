@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp2.2</TargetFramework>
+		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+		<AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
+		<UserSecretsId>fb2b0cc6-e28d-4acc-af68-3221af078f3e</UserSecretsId>
+    <Authors>Developer Team InSolutions</Authors>
+    <Company>In Solutions S.A.C.</Company>
+    <Version>1.2.0</Version>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<Optimize>false</Optimize>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="wwwroot\contracts\mapfre\**" />
+		<Content Remove="wwwroot\contracts\mapfre\**" />
+		<EmbeddedResource Remove="wwwroot\contracts\mapfre\**" />
+		<None Remove="wwwroot\contracts\mapfre\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspose.Imaging" Version="19.7.0" />
+		<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.CookiePolicy" Version="2.2.8" />
+		<PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+		<PackageReference Include="Serilog.Expressions" Version="3.3.0" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\IS.DocumenFormater.Repository\IS.DocumenFormater.Repository.csproj" />
+		<ProjectReference Include="..\IS.DocumenFormater.Services\IS.DocumenFormater.Services.csproj" />
+		<ProjectReference Include="..\IS.DocumenFormater.Utilities\IS.DocumenFormater.utilities.csproj" />
+	</ItemGroup>
+
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties appsettings_1json__JsonSchema="" />
+		</VisualStudio>
+	</ProjectExtensions>
+
+</Project>

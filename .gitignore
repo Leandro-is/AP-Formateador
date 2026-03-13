@@ -1,0 +1,42 @@
+﻿# Carpetas comunes de compilación
+**/bin/
+**/obj/
+
+# Archivos generados por NuGet
+**/project.assets.json
+**/*.csproj.nuget.*
+**/*.nuget.g.props
+**/*.nuget.g.targets
+**/*.nuget.dgspec.json
+
+# Archivos de usuario de Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Configuración local de VS
+.vs/
+.vscode/
+.idea/
+
+# Archivos temporales
+*.tmp
+*.bak
+*.log
+logs/
+publish/
+
+# Archivos de configuración generados
+GeneratedMSBuildEditorConfig.editorconfig
+*.FileListAbsolute.txt
+
+# Archivos de salida
+*.exe
+*.dll
+*.pdb
+*.cache
+
+# Otros
+_ReSharper*/
+*.slnLaunch.json
