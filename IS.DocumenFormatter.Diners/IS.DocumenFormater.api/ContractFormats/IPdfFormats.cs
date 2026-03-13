@@ -4,6 +4,9 @@
     {
         // AP - FORMATO UNICO JNE
         FormatSettings AP_FORMATO_UNICO_JNE { get; set; }
+        FormatSettings AP_ANEXO1 { get; set; }
+        FormatSettings AP_ANEXO2 { get; set; }
+
 
         //PLD - DIGITAL
         FormatSettings GARANTIA { get; set; }

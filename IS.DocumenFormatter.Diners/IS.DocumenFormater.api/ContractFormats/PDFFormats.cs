@@ -6,6 +6,8 @@ namespace IS.DocumenFormater.api.ContractFormats
     {
         // AP - FORMATO UNICO JNE
         public FormatSettings AP_FORMATO_UNICO_JNE { get; set; }
+        public FormatSettings AP_ANEXO1 { get; set; }
+        public FormatSettings AP_ANEXO2 { get; set; }
 
 
         //PLD - DIGITAL
