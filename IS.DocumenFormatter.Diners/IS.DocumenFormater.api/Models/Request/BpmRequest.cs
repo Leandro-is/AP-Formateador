@@ -41,7 +41,7 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public String Organizacion { get; set; }
         [DataMember]
-        public Integers Cargo { get; set; }
+        public int Cargo { get; set; }
         [DataMember]
         public String RegionCircunscripcion { get; set; }
         [DataMember]
@@ -185,7 +185,7 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public Boolean InfoPorDeclararCargosEleccionPopular { get; set; }
         [DataMember]
-        public Integers CargoEleccionPopular1 { get; set; }
+        public int CargoEleccionPopular1 { get; set; }
         [DataMember]
         public String TrayectoriaOrganizacionPopular1 { get; set; }
         [DataMember]
@@ -195,7 +195,7 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public String InfoCompleCargoPopular1 { get; set; }
         [DataMember]
-        public Integers CargoEleccionPopular2 { get; set; }
+        public int CargoEleccionPopular2 { get; set; }
         [DataMember]
         public String TrayectoriaOrganizacionPopular2 { get; set; }
         [DataMember]
@@ -217,11 +217,11 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public String SentenciasFallaPena1 { get; set; }
         [DataMember]
-        public Integers SentenciasModalidad1 { get; set; }
+        public int SentenciasModalidad1 { get; set; }
         [DataMember]
         public String SentenciasModalidadOtro1 { get; set; }
         [DataMember]
-        public Integers SentenciasCumplimiento1 { get; set; }
+        public int SentenciasCumplimiento1 { get; set; }
         [DataMember]
         public String SentenciasNroExpediente2 { get; set; }
         [DataMember]
@@ -233,17 +233,17 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public String SentenciasFallaPena2 { get; set; }
         [DataMember]
-        public Integers SentenciasModalidad2 { get; set; }
+        public int SentenciasModalidad2 { get; set; }
         [DataMember]
         public String SentenciasModalidadOtro2 { get; set; }
         [DataMember]
-        public Integers SentenciasCumplimiento2 { get; set; }
+        public int SentenciasCumplimiento2 { get; set; }
         [DataMember]
         public String InfoCompleSentencias { get; set; }
         [DataMember]
         public Boolean InfoPorDeclararRelacionDeSentencias { get; set; }
         [DataMember]
-        public Integers RelacionDeSentenciasMaterialDeDemanda1 { get; set; }
+        public int RelacionDeSentenciasMaterialDeDemanda1 { get; set; }
         [DataMember]
         public String RelacionDeSentenciasNroExpediente1 { get; set; }
         [DataMember]
@@ -251,7 +251,7 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public String RelacionDeSentenciasFallo1 { get; set; }
         [DataMember]
-        public Integers RelacionDeSentenciasMaterialDeDemanda2 { get; set; }
+        public int RelacionDeSentenciasMaterialDeDemanda2 { get; set; }
         [DataMember]
         public String RelacionDeSentenciasNroExpediente2 { get; set; }
         [DataMember]
@@ -259,7 +259,7 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public String RelacionDeSentenciasFallo2 { get; set; }
         [DataMember]
-        public Integers RelacionDeSentenciasMaterialDeDemanda3 { get; set; }
+        public int RelacionDeSentenciasMaterialDeDemanda3 { get; set; }
         [DataMember]
         public String RelacionDeSentenciasNroExpediente3 { get; set; }
         [DataMember]
@@ -267,7 +267,7 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public String RelacionDeSentenciasFallo3 { get; set; }
         [DataMember]
-        public Integers RelacionDeSentenciasMaterialDeDemanda4 { get; set; }
+        public int RelacionDeSentenciasMaterialDeDemanda4 { get; set; }
         [DataMember]
         public String RelacionDeSentenciasNroExpediente4 { get; set; }
         [DataMember]
@@ -428,7 +428,7 @@ namespace IS.DocumenFormater.api.Models.Request
         //ANEXO 1
 
         [DataMember]
-        public Integers ConsejoMunicipal { get; set; }
+        public int ConsejoMunicipal { get; set; }
         [DataMember]
         public String Lista { get; set; }
         [DataMember]
@@ -439,7 +439,7 @@ namespace IS.DocumenFormater.api.Models.Request
         //ANEXO 2
 
         [DataMember]
-        public Integers TipoComunidad { get; set; }
+        public int TipoComunidad { get; set; }
         [DataMember]
         public String NombreComunidad { get; set; }
         [DataMember]
@@ -470,8 +470,6 @@ namespace IS.DocumenFormater.api.Models.Request
         public String RazonSocialCliente { get; set; }
         [DataMember]
         public String RucCliente { get; set; }
-        [DataMember]
-        public String NroDocumentoCliente { get; set; }
         [DataMember]
         public String NombresCliente { get; set; }
         [DataMember]
@@ -508,8 +506,6 @@ namespace IS.DocumenFormater.api.Models.Request
         public String PrimerNombreCliente { get; set; }
         [DataMember]
         public String SegundoNombreCliente { get; set; }
-        [DataMember]
-        public virtual String ImpresionBiometricaCliente { get; set; }
         [DataMember]
         public String MontoCredito { get; set; }
         [DataMember]
@@ -1254,7 +1250,75 @@ namespace IS.DocumenFormater.api.Models.Request
         //[DataMember]
         //public String MedicoEntranteOtrasEnfermedades { get; set; }
 
+        public enum CargoOpciones : int
+        {
+            presidentedelarepublica = 1,
+            primervicepresidente = 2,
+            segundovicepresidente = 3,
+            diputados = 4,
+            representanteparlamentoandino = 5,
+            gobernadorregional = 6,
+            senadores = 7,
+            vicegobernadorregional = 8,
+            consejeroregional = 9,
+            alcaldeprovincial = 10,
+            regidorprovincial = 11,
+            alcaldedistrital = 12,
+            regidordistrital = 13
+        }
+        public enum CargoEleccionPopularOpciones : int
+        {
+            presidente = 1,
+            vicepresidente = 2,
+            congresista = 3,
+            parlamentarioandino = 4,
+            gobernadorregional = 5,
+            vicegobernadorregional = 6,
+            consejeroregional = 7,
+            alcaldeprovincial = 8,
+            alcaldedistrital = 9,
+            alcaldecentropoblado = 10,
+            regidorprovincial = 11,
+            regidordistrital = 12,
+            regidorcentropoblado = 13,
+            diputado = 14,
+            senador = 15
+        }
 
+        public enum SentenciasModalidadOpciones : int
+        {
+            efectiva = 1,
+            reservadefallo = 2,
+            suspendida = 3,
+            otro = 4
+        }
+
+        public enum SentenciasCumplimientoOpciones : int
+        {
+            penacumplida = 1,
+            encumplimiento = 2
+        }
+
+        public enum MaterialDemandaOpciones : int
+        {
+            laboral = 1,
+            contractual = 2,
+            familia = 3,
+            violenciafamiliar = 4
+        }
+
+        public enum ConsejoMunicipalOpciones : int
+        {
+            provincial = 1,
+            distrital = 2
+        }
+
+        public enum TipoComunidadOpciones : int
+        {
+            nativa = 1,
+            campesina = 2,
+            pueblooriginario = 3
+        }
         //public enum TipoDoc : int
         //{
         //    DNI = 1,
@@ -1348,13 +1412,13 @@ namespace IS.DocumenFormater.api.Models.Request
         //    Directo = 2,
         //    CCE = 3
         //}
-        //public enum DireccionDetalleD : int
+        //public enum direcciondetalled : int
         //{
-        //    Calle = 1,
-        //    Avenida = 2,
-        //    Jiron = 3,
-        //    Pasaje = 4,
-        //    Otro = 5
+        //    calle = 1,
+        //    avenida = 2,
+        //    jiron = 3,
+        //    pasaje = 4,
+        //    otro = 5
         //}
         //public enum DireccionDetalleExteriorD : int
         //{
