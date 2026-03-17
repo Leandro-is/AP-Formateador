@@ -2398,7 +2398,7 @@ namespace IS.DocumenFormater.api.Controllers
             return pdfbase64;
         }
 
-        private string ExistingPageFacial(string pdfBase64, string FacialImage, string Nombres, string ApellidoPaterno, string ApellidoMaterno, string DocumentoIdentidad, int x, int y, bool textoDerecha)
+        private string ExistingPageFacial(string pdfBase64, string FacialImage, string Nombres, string ApellidoPaterno, string ApellidoMaterno, string DocumentoIdentidad, int x, int y)//, bool textoDerecha)
         {
             DateTime fechaReniec = DateTime.Now;
             int numberOfPages;
@@ -2407,8 +2407,8 @@ namespace IS.DocumenFormater.api.Controllers
 
             String watermark = Convert.ToBase64String(System.IO.File.ReadAllBytes(Path.Combine(_hostingEnvironment.WebRootPath, "images/watermarkD.png")));
 
-            if (textoDerecha)
-            {
+            //if (textoDerecha)
+            //{
                 pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
                 //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x, y, 120, 55);
 
@@ -2422,9 +2422,9 @@ namespace IS.DocumenFormater.api.Controllers
                 //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 8);
 
                 //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y - 2);
-            }
-            else
-            { 
+            //}
+            //else
+            //{ 
             
                 //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, Nombres + " " + ApellidoPaterno + " " + ApellidoMaterno + " - " + "1" + " " + DocumentoIdentidad, numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x - 10, y + 190);
                 //pdfBase64 = PdfWorker.DrawLineInPdf(pdfBase64, numberOfPages, x - 15, y + 185, x + 495, y + 185);
@@ -2432,7 +2432,7 @@ namespace IS.DocumenFormater.api.Controllers
                 //pdfBase64 = PdfWorker.DrawRectangleInPdf(pdfBase64, numberOfPages, x - 15, y - 25, 150, 200);
 
                 //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 25, y + 50, 70, 120);
-                pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
+                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
                 //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x , y, 120, 55);
 
                 ////pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, BarCode, numberOfPages, x, y + 30, 120, 20);
@@ -2449,7 +2449,7 @@ namespace IS.DocumenFormater.api.Controllers
                 //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 68);
                 //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 80);
                 //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 92);
-            }
+            //}
 
             return pdfBase64;
         }
