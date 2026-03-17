@@ -1528,7 +1528,7 @@ namespace IS.DocumenFormater.api.Controllers
             }
 
             pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NombreComunidad}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 339, 487, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.ProvinciaComunidad}", 1, 1, iTextSharp.text.Element.ALIGN_LEFT, 100, 463, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.ProvinciaComunidad}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 100, 463, 0.0f);
             pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DepartamentoComunidad}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 317, 464, 0.0f);
             pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Lugar}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 133, 360, 0.0f);
 
@@ -2410,18 +2410,18 @@ namespace IS.DocumenFormater.api.Controllers
             if (textoDerecha)
             {
                 pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
-                pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x, y, 120, 55);
+                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x, y, 120, 55);
 
-                // texto a la derecha de la huella
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 40);
+                //// texto a la derecha de la huella
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 40);
 
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 30);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 30);
 
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y+18);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y+18);
 
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 8);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 8);
 
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y - 2);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y - 2);
             }
             else
             { 
@@ -2433,22 +2433,22 @@ namespace IS.DocumenFormater.api.Controllers
 
                 //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 25, y + 50, 70, 120);
                 pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
-                pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x , y, 120, 55);
+                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x , y, 120, 55);
 
-                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, BarCode, numberOfPages, x, y + 30, 120, 20);
+                ////pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, BarCode, numberOfPages, x, y + 30, 120, 20);
 
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente con", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biometría facial utilizando el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 10);
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "servicio de verificación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y);
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica de Reniec con fecha", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 10);
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy"), numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 20);
+                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente con", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
+                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biometría facial utilizando el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 10);
+                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "servicio de verificación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y);
+                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica de Reniec con fecha", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 10);
+                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy"), numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 20);
 
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 44 );
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 56 );
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 68);
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 80);
-                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 92);
+                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 44 );
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 56 );
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 68);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 80);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 92);
             }
 
             return pdfBase64;
