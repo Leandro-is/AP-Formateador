@@ -718,11 +718,23 @@ namespace IS.DocumenFormater.api.Controllers
 
                         if (FingerprintImage != null)
                         {
-                            solicitudGenerated = AddPageFacial(solicitudGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+                            solicitudGenerated = AddPageFacial(solicitudGenerated, 
+                                FingerprintImage, 
+                                request.AddHojaNombres, 
+                                request.AddHojaApellidoPaterno,
+                                request.AddHojaApellidoMaterno, 
+                                request.AddHojaDocumentoIdentidad, 55, 620);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                solicitudGenerated = ExistingPageFacial(solicitudGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                solicitudGenerated = ExistingPageFacial(
+                                    solicitudGenerated, 
+                                    FingerprintImage2, 
+                                    request.AddHojaNombres2, 
+                                    request.AddHojaApellidoPaterno2, 
+                                    request.AddHojaApellidoMaterno2, 
+                                    request.AddHojaDocumentoIdentidad2, 
+                                    55, 380, false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -797,13 +809,45 @@ namespace IS.DocumenFormater.api.Controllers
 
                         string contratoGenerated = GetAPAnexo1JNEPDF(_pdfFormats.AP_ANEXO1, request/*, FingerprintImage, ""*/);
 
+                        //if (FingerprintImage != null)
+                        //{
+                        //    contratoGenerated = AddPageFacial(contratoGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+
+                        //    if (!String.IsNullOrEmpty(FingerprintImage2))
+                        //    {
+                        //        contratoGenerated = ExistingPageFacial(contratoGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                        //    }
+                        //}
+
+                        // No añadir pagina para la huella en la misma hoja
+
+                        int cuadroX = 420;
+                        int cuadroY = 606;
+
+                        int x = cuadroX - 25;
+                        int y = cuadroY - 50;
+
                         if (FingerprintImage != null)
                         {
-                            contratoGenerated = AddPageFacial(contratoGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+                            contratoGenerated = ExistingPageFacial(
+                                contratoGenerated, 
+                                FingerprintImage, 
+                                request.AddHojaNombres, 
+                                request.AddHojaApellidoPaterno,
+                                request.AddHojaApellidoMaterno, 
+                                request.AddHojaDocumentoIdentidad, 
+                                x, y, false);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                contratoGenerated = ExistingPageFacial(contratoGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                contratoGenerated = ExistingPageFacial(
+                                    contratoGenerated, 
+                                    FingerprintImage2, 
+                                    request.AddHojaNombres2, 
+                                    request.AddHojaApellidoPaterno2, 
+                                    request.AddHojaApellidoMaterno2, 
+                                    request.AddHojaDocumentoIdentidad2, 
+                                    470, 556, false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -879,14 +923,47 @@ namespace IS.DocumenFormater.api.Controllers
 
                         string garantiaGenerated = GetAPAnexo2JNEPDF(_pdfFormats.AP_ANEXO2, request/*, FingerprintImage, ""*/);
 
-                        if (FingerprintImage != null)
 
+                        // No añadir pagina para la huella en la misma hoja
+
+                        //if (FingerprintImage != null)
+
+                        //{
+                        //    garantiaGenerated = AddPageFacial(garantiaGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+
+                        //    if (!String.IsNullOrEmpty(FingerprintImage2))
+                        //    {
+                        //        garantiaGenerated = ExistingPageFacial(garantiaGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                        //    }
+                        //}
+
+                        int cuadroX = 353;
+                        int cuadroY = 361;
+
+                        int x = cuadroX - 25;
+                        int y = cuadroY - 50;
+
+                        if (FingerprintImage != null)
                         {
-                            garantiaGenerated = AddPageFacial(garantiaGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+                            garantiaGenerated = ExistingPageFacial(
+                                garantiaGenerated,
+                                FingerprintImage,
+                                request.AddHojaNombres,
+                                request.AddHojaApellidoPaterno,
+                                request.AddHojaApellidoMaterno,
+                                request.AddHojaDocumentoIdentidad,
+                                x, y, true);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                garantiaGenerated = ExistingPageFacial(garantiaGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                garantiaGenerated = ExistingPageFacial(
+                                    garantiaGenerated,
+                                    FingerprintImage2,
+                                    request.AddHojaNombres2,
+                                    request.AddHojaApellidoPaterno2,
+                                    request.AddHojaApellidoMaterno2,
+                                    request.AddHojaDocumentoIdentidad2,
+                                    470, 556, true);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -967,7 +1044,14 @@ namespace IS.DocumenFormater.api.Controllers
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                pagareGenerated = ExistingPageFacial(pagareGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                pagareGenerated = ExistingPageFacial(
+                                    pagareGenerated, 
+                                    FingerprintImage2, 
+                                    request.AddHojaNombres2, 
+                                    request.AddHojaApellidoPaterno2, 
+                                    request.AddHojaApellidoMaterno2, 
+                                    request.AddHojaDocumentoIdentidad2, 
+                                    55, 380, false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -1048,7 +1132,14 @@ namespace IS.DocumenFormater.api.Controllers
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                desgravamenGenerated = ExistingPageFacial(desgravamenGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                desgravamenGenerated = ExistingPageFacial(
+                                    desgravamenGenerated, 
+                                    FingerprintImage2, 
+                                    request.AddHojaNombres2, 
+                                    request.AddHojaApellidoPaterno2, 
+                                    request.AddHojaApellidoMaterno2, 
+                                    request.AddHojaDocumentoIdentidad2, 
+                                    55, 380, false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -1129,7 +1220,14 @@ namespace IS.DocumenFormater.api.Controllers
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                hojaAceptacion = ExistingPageFacial(hojaAceptacion, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                hojaAceptacion = ExistingPageFacial(
+                                    hojaAceptacion, 
+                                    FingerprintImage2, 
+                                    request.AddHojaNombres2, 
+                                    request.AddHojaApellidoPaterno2, 
+                                    request.AddHojaApellidoMaterno2, 
+                                    request.AddHojaDocumentoIdentidad2, 
+                                    55, 380, false);
                             }
                         }
 
@@ -1211,7 +1309,14 @@ namespace IS.DocumenFormater.api.Controllers
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                hojaOptativo = ExistingPageFacial(hojaOptativo, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                hojaOptativo = ExistingPageFacial(
+                                    hojaOptativo, 
+                                    FingerprintImage2, 
+                                    request.AddHojaNombres2, 
+                                    request.AddHojaApellidoPaterno2, 
+                                    request.AddHojaApellidoMaterno2, 
+                                    request.AddHojaDocumentoIdentidad2, 
+                                    55, 380, false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -1336,20 +1441,17 @@ namespace IS.DocumenFormater.api.Controllers
             return pdfbase64;
         }
 
-        
-
-
         //2
         private String GetAPAnexo1JNEPDF(FormatSettings formatSettings, BpmRequest request/*, String FingerprintImage, String BarCode*/)
         {
             String pdfbase64 = Convert.ToBase64String(System.IO.File.ReadAllBytes(Path.Combine(_hostingEnvironment.WebRootPath, formatSettings.PathFileBase)));
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NombreCandidato}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, /*X*/ 121, /*Y*/ 565, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NroDocumentoCliente}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, 174, 553, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DireccionDomicilio}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, 101, 542, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DistritoDomicilio}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, 100, 530, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.ProvinciaDomicilio}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, 268, 530, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DepartamentoDomicilio}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, 100, 519, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NombreCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, /*X*/ 123, /*Y*/ 567, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NroDocumentoCliente}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 175, 556, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DireccionDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 101, 545, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DistritoDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 101, 533, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.ProvinciaDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 270, 533, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DepartamentoDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 102, 522, 0.0f);
 
             // Normaliza el valor (null -> -1 para "sin selección")
             int? cmValueNullable = request.ConsejoMunicipal;   
@@ -1358,37 +1460,37 @@ namespace IS.DocumenFormater.api.Controllers
             if (cmValue == 0)
             {
                 // Marcar PROVINCIAL
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X",31, 9, iTextSharp.text.Element.ALIGN_LEFT, 382, 506, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X",1, 9, iTextSharp.text.Element.ALIGN_LEFT, 385, 508, 0.0f);
             }
             else if (cmValue == 1)
             {
                 // Marcar DISTRITAL
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X",31, 9, iTextSharp.text.Element.ALIGN_LEFT, 444, 505, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X",1, 9, iTextSharp.text.Element.ALIGN_LEFT, 447, 508, 0.0f);
             }
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Lista}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, 100, 485, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Organizacion}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, 101, 485, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Lugar}", 31, 9, iTextSharp.text.Element.ALIGN_RIGHT, 132, 588, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Lista}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 101, 500, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Organizacion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 102, 487, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Lugar}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 133, 590, 0.0f);
 
             System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("es-PE");
 
             if (DateTime.TryParse(request.Fecha, cultureinfo, System.Globalization.DateTimeStyles.None, out var fechaCompleta))
             {
                 // Escribe solo el día (ajusta coordenadas si van MM/yyyy en otros lugares)
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaCompleta:dd}", 1, 9, iTextSharp.text.Element.ALIGN_CENTER, 131, 576, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaCompleta:dd}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 133, 578, 0.0f);
             }
             else
             {
                 // Opción B: si SOLO tienes el día en request.FechaDia (ej. "22")
                 if (int.TryParse((request.FechaDia ?? "").Trim(), out var dia) && dia >= 1 && dia <= 31)
                 {
-                    pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {dia:00}", 1, 9, iTextSharp.text.Element.ALIGN_CENTER, 131, 576, 0.0f);
+                    pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {dia:00}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 133, 578, 0.0f);
                 }
                 // Si necesitas también mes/año, añade campos request.FechaMes, request.FechaAnio y escríbelos en sus coordenadas.
             }
 
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ImpresionBiometricaCliente}", 31, 10, iTextSharp.text.Element.ALIGN_LEFT, 421, 541, 0.0f);
+            //pdfbase64 = PdfWorker.WriteImageInPdf(pdfbase64, $"{request.ImpresionBiometricaCliente}", 2, 422, 542, 80, 80);
  
             return pdfbase64;
         }
@@ -1398,12 +1500,12 @@ namespace IS.DocumenFormater.api.Controllers
         {
             String pdfbase64 = Convert.ToBase64String(System.IO.File.ReadAllBytes(Path.Combine(_hostingEnvironment.WebRootPath, formatSettings.PathFileBase)));
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NombreCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, /*X+61*/ 167, /*Y*/ 554, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NroDocumentoCliente}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 285, 542, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DireccionDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 462, 530, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DistritoDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 149, 519, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.ProvinciaDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 297, 519, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DepartamentoDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 124, 508, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NombreCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, /*X+61*/ 167, /*Y*/ 555, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NroDocumentoCliente}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 285, 544, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DireccionDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 100, 533, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DistritoDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 149, 521, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.ProvinciaDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 297, 521, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DepartamentoDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 124, 510, 0.0f);
 
             // Tipo Comunidad
             int? cmValueNullable = request.TipoComunidad;
@@ -1412,23 +1514,23 @@ namespace IS.DocumenFormater.api.Controllers
             if (cmValue == 0)
             {
                 // Marcar Nativa
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 338, 494, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 338, 496, 0.0f);
             }
             else if (cmValue == 1)
             {
                 // Marcar Campesina
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 417, 494, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 417, 496, 0.0f);
             }
             else if (cmValue == 2)
             {
-                // Marcar Pueblo Originario
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 173, 483, 0.0f);
+                // Marcar Pueblo 496
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 173, 495, 0.0f);
             }
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NombreComunidad}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 339, 485, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.ProvinciaComunidad}", 1, 1, iTextSharp.text.Element.ALIGN_LEFT, 100, 461, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DepartamentoComunidad}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 317, 462, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Lugar}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 133, 358, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.NombreComunidad}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 339, 487, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.ProvinciaComunidad}", 1, 1, iTextSharp.text.Element.ALIGN_LEFT, 100, 463, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.DepartamentoComunidad}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 317, 464, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {request.Lugar}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 133, 360, 0.0f);
 
             //if (!String.IsNullOrEmpty(FingerprintImage) && !String.IsNullOrEmpty(BarCode))
             //{
@@ -1444,22 +1546,22 @@ namespace IS.DocumenFormater.api.Controllers
             bool formatTransaccion = DateTime.TryParse(request.Fecha, cultureinfo, System.Globalization.DateTimeStyles.None, out fechaTransaccion);
             if (formatTransaccion)
             {
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaTransaccion.ToString("dd")}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 13, 346, 0.0f);
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaTransaccion.ToString("MM")}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 174, 346, 0.0f);
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaTransaccion.ToString("yyyy")}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 224, 346, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaTransaccion.ToString("dd")}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 135, 348, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaTransaccion.ToString("MM")}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 174, 348, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaTransaccion.ToString("yyyy")}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 224, 348, 0.0f);
             }
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.AutoridadCargo}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 147, 169, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.AutoridadNombres}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 147, 157, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.AutoridadApellidos}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 147, 147, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.AutoridadNroDNI}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 148, 137, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.AutoridadCargo}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 147, 170, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.AutoridadNombres}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 147, 158, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.AutoridadApellidos}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 147, 148, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.AutoridadNroDNI}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 148, 138, 0.0f);
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.JuezCargo}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 381, 168, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.JuezNombres}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 380, 157, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.JuezApellidos}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 380, 147, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.JuezNroDNI}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 381, 137, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.JuezCargo}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 381, 170, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.JuezNombres}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 380, 158, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.JuezApellidos}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 380, 148, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.JuezNroDNI}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 381, 138, 0.0f);
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ImpresionBiometricaCliente}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 354, 297, 0.0f);
+            //pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ImpresionBiometricaCliente}", 1, 10, iTextSharp.text.Element.ALIGN_LEFT, 354, 298, 0.0f);
 
             return pdfbase64;   
         }
@@ -2296,7 +2398,7 @@ namespace IS.DocumenFormater.api.Controllers
             return pdfbase64;
         }
 
-        private string ExistingPageFacial(string pdfBase64, string FacialImage, string Nombres, string ApellidoPaterno, string ApellidoMaterno, string DocumentoIdentidad, int x, int y)
+        private string ExistingPageFacial(string pdfBase64, string FacialImage, string Nombres, string ApellidoPaterno, string ApellidoMaterno, string DocumentoIdentidad, int x, int y, bool textoDerecha)
         {
             DateTime fechaReniec = DateTime.Now;
             int numberOfPages;
@@ -2305,27 +2407,49 @@ namespace IS.DocumenFormater.api.Controllers
 
             String watermark = Convert.ToBase64String(System.IO.File.ReadAllBytes(Path.Combine(_hostingEnvironment.WebRootPath, "images/watermarkD.png")));
 
-            pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, Nombres + " " + ApellidoPaterno + " " + ApellidoMaterno + " - " + "1" + " " + DocumentoIdentidad, numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x - 10, y + 190);
-            pdfBase64 = PdfWorker.DrawLineInPdf(pdfBase64, numberOfPages, x - 15, y + 185, x + 495, y + 185);
+            if (textoDerecha)
+            {
+                pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
+                pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x, y, 120, 55);
 
-            pdfBase64 = PdfWorker.DrawRectangleInPdf(pdfBase64, numberOfPages, x - 15, y - 25, 150, 200);
+                // texto a la derecha de la huella
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 40);
 
-            pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 25, y + 50, 70, 120);
-            pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x, y + 50, 120, 120);
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 30);
 
-            //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, BarCode, numberOfPages, x, y + 30, 120, 20);
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y+18);
 
-            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente con", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
-            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biometría facial utilizando el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 10);
-            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "servicio de verificación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y);
-            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica de Reniec con fecha", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 10);
-            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy"), numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 20);
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 8);
 
-            pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
-            pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 10);
-            pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y);
-            pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 10);
-            pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 20);
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y - 2);
+            }
+            else
+            { 
+            
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, Nombres + " " + ApellidoPaterno + " " + ApellidoMaterno + " - " + "1" + " " + DocumentoIdentidad, numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x - 10, y + 190);
+                //pdfBase64 = PdfWorker.DrawLineInPdf(pdfBase64, numberOfPages, x - 15, y + 185, x + 495, y + 185);
+
+                //pdfBase64 = PdfWorker.DrawRectangleInPdf(pdfBase64, numberOfPages, x - 15, y - 25, 150, 200);
+
+                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 25, y + 50, 70, 120);
+                pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
+                pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x , y, 120, 55);
+
+                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, BarCode, numberOfPages, x, y + 30, 120, 20);
+
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente con", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biometría facial utilizando el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 10);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "servicio de verificación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica de Reniec con fecha", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 10);
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy"), numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 20);
+
+                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 44 );
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 56 );
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 68);
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 80);
+                pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 92);
+            }
 
             return pdfBase64;
         }
