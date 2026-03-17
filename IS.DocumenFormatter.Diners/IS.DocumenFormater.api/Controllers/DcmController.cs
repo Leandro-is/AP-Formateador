@@ -734,7 +734,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2, 
                                     request.AddHojaApellidoMaterno2, 
                                     request.AddHojaDocumentoIdentidad2, 
-                                    55, 380, false);
+                                    55, 380);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -836,7 +836,7 @@ namespace IS.DocumenFormater.api.Controllers
                                 request.AddHojaApellidoPaterno,
                                 request.AddHojaApellidoMaterno, 
                                 request.AddHojaDocumentoIdentidad, 
-                                x, y, false);
+                                x, y);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
@@ -847,7 +847,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2, 
                                     request.AddHojaApellidoMaterno2, 
                                     request.AddHojaDocumentoIdentidad2, 
-                                    470, 556, false);
+                                    470, 556);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -952,7 +952,7 @@ namespace IS.DocumenFormater.api.Controllers
                                 request.AddHojaApellidoPaterno,
                                 request.AddHojaApellidoMaterno,
                                 request.AddHojaDocumentoIdentidad,
-                                x, y, true);
+                                x, y);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
@@ -963,7 +963,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2,
                                     request.AddHojaApellidoMaterno2,
                                     request.AddHojaDocumentoIdentidad2,
-                                    470, 556, true);
+                                    470, 556);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
