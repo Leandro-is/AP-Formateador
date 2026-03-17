@@ -731,18 +731,44 @@ namespace IS.DocumenFormater.api.Controllers
                         int cuadroX = 50;
                         int cuadroY = 840 - 175;
 
-                        int x = cuadroX - 40;
-                        int y = cuadroY - 49;
+                        int x = cuadroX - 32;
+                        int y = cuadroY - 89;
+
+                        //if (FingerprintImage != null)
+                        //{
+                        //    solicitudGenerated = AddPageFacial(solicitudGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+
+                        //    if (!String.IsNullOrEmpty(FingerprintImage2))
+                        //    {
+                        //        solicitudGenerated = ExistingPageFacial(solicitudGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                        //    }
+                        //}
+
 
                         if (FingerprintImage != null)
                         {
-                            solicitudGenerated = AddPageFacial(solicitudGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+                            solicitudGenerated = ExistingPageFacial(
+                                solicitudGenerated,
+                                FingerprintImage,
+                                request.AddHojaNombres,
+                                request.AddHojaApellidoPaterno,
+                                request.AddHojaApellidoMaterno,
+                                request.AddHojaDocumentoIdentidad,
+                                x, y,1,true);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                solicitudGenerated = ExistingPageFacial(solicitudGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                solicitudGenerated = ExistingPageFacial(
+                                    solicitudGenerated,
+                                    FingerprintImage2,
+                                    request.AddHojaNombres2,
+                                    request.AddHojaApellidoPaterno2,
+                                    request.AddHojaApellidoMaterno2,
+                                    request.AddHojaDocumentoIdentidad2,
+                                    470, 556,1,true);
                             }
                         }
+
 
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
                         _logger.LogCritical("Finalizing create format...");
@@ -843,7 +869,7 @@ namespace IS.DocumenFormater.api.Controllers
                                 request.AddHojaApellidoPaterno,
                                 request.AddHojaApellidoMaterno, 
                                 request.AddHojaDocumentoIdentidad, 
-                                x, y);
+                                x, y,2,false);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
@@ -854,7 +880,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2, 
                                     request.AddHojaApellidoMaterno2, 
                                     request.AddHojaDocumentoIdentidad2, 
-                                    470, 556);
+                                    470, 556,2,false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -959,7 +985,7 @@ namespace IS.DocumenFormater.api.Controllers
                                 request.AddHojaApellidoPaterno,
                                 request.AddHojaApellidoMaterno,
                                 request.AddHojaDocumentoIdentidad,
-                                x, y);
+                                x, y, 1,false);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
@@ -970,7 +996,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2,
                                     request.AddHojaApellidoMaterno2,
                                     request.AddHojaDocumentoIdentidad2,
-                                    470, 556);
+                                    470, 556,1,false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -1058,7 +1084,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2, 
                                     request.AddHojaApellidoMaterno2, 
                                     request.AddHojaDocumentoIdentidad2, 
-                                    55, 380);
+                                    55, 380, 1,false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -1146,7 +1172,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2, 
                                     request.AddHojaApellidoMaterno2, 
                                     request.AddHojaDocumentoIdentidad2, 
-                                    55, 380);
+                                    55, 380,1,false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -1234,7 +1260,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2, 
                                     request.AddHojaApellidoMaterno2, 
                                     request.AddHojaDocumentoIdentidad2, 
-                                    55, 380);
+                                    55, 380,1,false);
                             }
                         }
 
@@ -1323,7 +1349,7 @@ namespace IS.DocumenFormater.api.Controllers
                                     request.AddHojaApellidoPaterno2, 
                                     request.AddHojaApellidoMaterno2, 
                                     request.AddHojaDocumentoIdentidad2, 
-                                    55, 380);
+                                    55, 380,1,false);
                             }
                         }
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
@@ -3458,57 +3484,65 @@ namespace IS.DocumenFormater.api.Controllers
             return pdfbase64;
         }
 
-        private string ExistingPageFacial(string pdfBase64, string FacialImage, string Nombres, string ApellidoPaterno, string ApellidoMaterno, string DocumentoIdentidad, int x, int y)//, bool textoDerecha)
+        private string ExistingPageFacial(string pdfBase64, string FacialImage, string Nombres, string ApellidoPaterno, string ApellidoMaterno, string DocumentoIdentidad, int x, int y,int numberOfPages,bool tamaño)//, bool textoDerecha)
         {
             DateTime fechaReniec = DateTime.Now;
-            int numberOfPages;
+            //int numberOfPages;
 
-            PdfWorker.GetMaxPageNumber(pdfBase64, out numberOfPages);
+            //PdfWorker.GetMaxPageNumber(pdfBase64, out numberOfPages);
 
             String watermark = Convert.ToBase64String(System.IO.File.ReadAllBytes(Path.Combine(_hostingEnvironment.WebRootPath, "images/watermarkD.png")));
 
             //if (textoDerecha)
             //{
+            if (tamaño == true)
+                { 
+
+                pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 78, 100);
+            }
+            else
+            {
                 pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
-                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x, y, 120, 55);
+            }
+            //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x, y, 120, 55);
 
-                //// texto a la derecha de la huella
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 40);
+            //// texto a la derecha de la huella
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 40);
 
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 30);
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 30);
 
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y+18);
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y+18);
 
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 8);
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y + 8);
 
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y - 2);
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x + 90, y - 2);
             //}
             //else
             //{ 
-            
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, Nombres + " " + ApellidoPaterno + " " + ApellidoMaterno + " - " + "1" + " " + DocumentoIdentidad, numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x - 10, y + 190);
-                //pdfBase64 = PdfWorker.DrawLineInPdf(pdfBase64, numberOfPages, x - 15, y + 185, x + 495, y + 185);
 
-                //pdfBase64 = PdfWorker.DrawRectangleInPdf(pdfBase64, numberOfPages, x - 15, y - 25, 150, 200);
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, Nombres + " " + ApellidoPaterno + " " + ApellidoMaterno + " - " + "1" + " " + DocumentoIdentidad, numberOfPages, 10, iTextSharp.text.Element.ALIGN_LEFT, x - 10, y + 190);
+            //pdfBase64 = PdfWorker.DrawLineInPdf(pdfBase64, numberOfPages, x - 15, y + 185, x + 495, y + 185);
 
-                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 25, y + 50, 70, 120);
-                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
-                //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x , y, 120, 55);
+            //pdfBase64 = PdfWorker.DrawRectangleInPdf(pdfBase64, numberOfPages, x - 15, y - 25, 150, 200);
 
-                ////pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, BarCode, numberOfPages, x, y + 30, 120, 20);
+            //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 25, y + 50, 70, 120);
+            //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, FacialImage, numberOfPages, x + 30, y - 8, 45, 55);
+            //pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, watermark, numberOfPages, x , y, 120, 55);
 
-                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente con", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
-                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biometría facial utilizando el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 10);
-                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "servicio de verificación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y);
-                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica de Reniec con fecha", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 10);
-                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy"), numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 20);
+            ////pdfBase64 = PdfWorker.WriteImageInPdf(pdfBase64, BarCode, numberOfPages, x, y + 30, 120, 20);
 
-                ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 44 );
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 56 );
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 68);
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 80);
-                //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 92);
+            ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente con", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
+            ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biometría facial utilizando el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 10);
+            ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "servicio de verificación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y);
+            ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica de Reniec con fecha", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 10);
+            ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy"), numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 20);
+
+            ////pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y + 20);
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Firmado electrónicamente el", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 44 );
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, fechaReniec.ToString("dd/MM/yyyy") + " con tecnología", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 56 );
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "Bit4ID S.A.C. y validación", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 68);
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "biométrica facial a través de", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 80);
+            //pdfBase64 = PdfWorker.WriteTextInPdf(pdfBase64, "la tecnología de Facetec Inc.", numberOfPages, 10, iTextSharp.text.Element.ALIGN_CENTER, x + 60, y - 92);
             //}
 
             return pdfBase64;
