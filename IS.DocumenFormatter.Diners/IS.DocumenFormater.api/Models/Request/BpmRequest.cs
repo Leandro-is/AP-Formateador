@@ -415,6 +415,8 @@ namespace IS.DocumenFormater.api.Models.Request
         [DataMember]
         public String TitularidadValorNominalTotalAcciones { get; set; }
         [DataMember]
+        public String TitularidadInfoComple { get; set; }
+        [DataMember]
         public Boolean InfoPorDeclararInfoAdicional { get; set; }
         [DataMember]
         public String InfoAdicional1 { get; set; }

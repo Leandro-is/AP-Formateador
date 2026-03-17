@@ -7,6 +7,45 @@ namespace IS.DocumenFormater.utilities.iPdf
 {
     public class PdfWorker
     {
+
+        public static (string, string) DividirOracionSinCortarPalabras(string input, int maxCaracteres)
+        {
+            if (input.Length <= maxCaracteres)
+            {
+                return (input, string.Empty);
+            }
+
+            int index = input.LastIndexOf(' ', maxCaracteres);
+
+            if (index == -1)
+            {
+                index = maxCaracteres;
+            }
+
+            string direccionParte1 = input.Substring(0, index).Trim();
+            string direccionParte2 = input.Substring(index).Trim();
+
+
+            return (direccionParte1, direccionParte2);
+        }
+
+        public static (string, string) DividirOracionCortandoPalabras(string input, int maxCaracteres)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return (string.Empty, string.Empty);
+
+            input = input.Trim();
+
+            if (input.Length <= maxCaracteres)
+                return (input.ToUpper(), string.Empty);
+
+            string parte1 = input.Substring(0, maxCaracteres).Trim().ToUpper();
+            string parte2 = input.Substring(maxCaracteres).Trim().ToUpper();
+
+            return (parte1, parte2);
+        }
+
+
         public static String AddPage(String pdfInput, out int numberOfPages)
         {
             String pdfOuput;

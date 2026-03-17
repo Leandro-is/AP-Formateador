@@ -19,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -51,7 +52,7 @@ namespace IS.DocumenFormater.api.Controllers
             _hostingEnvironment = hostingEnvironment;
             _logger = logger;
         }
-        
+
         //rutas de los archivos
 
         // GET api/values
@@ -89,14 +90,14 @@ namespace IS.DocumenFormater.api.Controllers
                 //NroCtaTransfer = "12345678910",
                 //Entidad = "banco de credito",
 
-                
+
                 //Datos personales cliente
                 TipoDocumentoCliente = "DNI",
                 NroDocumentoCliente = "61092461",
                 NombresCliente = "GRETEL ESTEFANIA",
                 ApPaternoCliente = "VIDAL",
                 ApMaternoCliente = "CHIRA",
-                
+
                 FechaNacimientoCliente = "28/01/2021",
                 SexoCliente = "Femenino",
                 Nacionalidad = "Peruana",
@@ -214,8 +215,8 @@ namespace IS.DocumenFormater.api.Controllers
 
                 ////Prestamo personal
                 //SeleccioneSubProducto = "Estudios",
-                
-                
+
+
 
                 ////Prestamo estudios
                 //TipoPrestamoEstudios = "Extranjera",
@@ -716,15 +717,47 @@ namespace IS.DocumenFormater.api.Controllers
 
                         string solicitudGenerated = GetFormatoUnicoJNEPDF(_pdfFormats.AP_FORMATO_UNICO_JNE, request/*, FingerprintImage, ""*/);
 
+                        //if (FingerprintImage != null)
+                        //{
+                        //    solicitudGenerated = AddPageFacial(solicitudGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+
+                        //    if (!String.IsNullOrEmpty(FingerprintImage2))
+                        //    {
+                        //        solicitudGenerated = ExistingPageFacial(solicitudGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                        //    }
+                        //}
+
+
+                        int cuadroX = 50;
+                        int cuadroY = 840 - 175;
+
+                        int x = cuadroX - 40;
+                        int y = cuadroY - 49;
+
                         if (FingerprintImage != null)
                         {
-                            solicitudGenerated = AddPageFacial(solicitudGenerated, FingerprintImage, request.AddHojaNombres, request.AddHojaApellidoPaterno, request.AddHojaApellidoMaterno, request.AddHojaDocumentoIdentidad, 55, 620);
+                            solicitudGenerated = ExistingPageFacial(
+                                solicitudGenerated,
+                                FingerprintImage,
+                                request.AddHojaNombres,
+                                request.AddHojaApellidoPaterno,
+                                request.AddHojaApellidoMaterno,
+                                request.AddHojaDocumentoIdentidad,
+                                x, y);
 
                             if (!String.IsNullOrEmpty(FingerprintImage2))
                             {
-                                solicitudGenerated = ExistingPageFacial(solicitudGenerated, FingerprintImage2, request.AddHojaNombres2, request.AddHojaApellidoPaterno2, request.AddHojaApellidoMaterno2, request.AddHojaDocumentoIdentidad2, 55, 380);
+                                solicitudGenerated = ExistingPageFacial(
+                                    solicitudGenerated,
+                                    FingerprintImage2,
+                                    request.AddHojaNombres2,
+                                    request.AddHojaApellidoPaterno2,
+                                    request.AddHojaApellidoMaterno2,
+                                    request.AddHojaDocumentoIdentidad2,
+                                    470, 556);
                             }
                         }
+
                         //await UpdateEntityTransaccionalDocumentFormater(EntityTransactional.Id);
                         _logger.LogCritical("Finalizing create format...");
 
@@ -1247,37 +1280,69 @@ namespace IS.DocumenFormater.api.Controllers
         {
             String pdfbase64 = Convert.ToBase64String(System.IO.File.ReadAllBytes(Path.Combine(_hostingEnvironment.WebRootPath, formatSettings.PathFileBase)));
 
-            ////Canal venta
+            //// I
 
             pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ProcesoElectoral}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 222, 732, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NroDocumentoCliente}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 214, 658, 0.0f);
 
-            if (request.Sexo == "M")
+            if (request.TipoDocumento == "DNI")
             {
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 219, 640, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NroDocumentoCliente}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 214, 658, 5.5f);
             }
-            else if (request.Sexo == "F")
+            else if (request.TipoDocumento == "CE")
             {
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 640, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NroDocumentoCliente}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 465, 840 - 182, 5.5f);
             }
             else
             {
                 pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
             }
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ApPaternoCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 215, 840-214, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ApMaternoCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 214, 840-229, 0.0f);
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NombreCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 214, 840-250, 0.0f);
+            if (request.Sexo == "M")
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 219, 642, 0.0f);
+            }
+            else if (request.Sexo == "F")
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 642, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
 
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ApPaternoCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 215, 840 - 214, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ApMaternoCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 214, 840 - 232, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NombreCandidato}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 214, 840 - 250, 0.0f);
 
+            System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("es-PE");
+            DateTime fechaNacimiento = DateTime.MinValue;
+            bool formatTransaccion = DateTime.TryParse(request.FechaNacimiento, cultureinfo, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
+            if (formatTransaccion)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaNacimiento.ToString("dd")}", 1, 9, iTextSharp.text.Element.ALIGN_CENTER, 269, 840 - 269, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaNacimiento.ToString("MM")}", 1, 9, iTextSharp.text.Element.ALIGN_CENTER, 299, 840 - 269, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaNacimiento.ToString("yyyy")}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 327, 840 - 269, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.PaisNacimiento}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 89, 840 - 305, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ProvinciaNacimiento}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 89, 840 - 321, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DepartamentoNacimiento}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 367, 840 - 305, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DistritoNacimiento}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 367, 840 - 321, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DepartamentoDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 104, 840 - 353, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DistritoDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 104, 840 - 369, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DireccionDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 104, 840 - 385, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ProvinciaDomicilio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 367, 840 - 353, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.Organizacion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 206, 840 - 402, 0.0f);
 
             if (request.Cargo == (int)CargoOpciones.presidentedelarepublica)
             {
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840-438, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 438, 0.0f);
             }
             else if (request.Cargo == (int)CargoOpciones.primervicepresidente)
             {
-                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840-453, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 453, 0.0f);
             }
             else if (request.Cargo == (int)CargoOpciones.segundovicepresidente)
             {
@@ -1329,8 +1394,1029 @@ namespace IS.DocumenFormater.api.Controllers
             }
 
 
-            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RegionCircunscripcion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 90, 840 - 512, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DistritoCircunscripcion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 90, 840 - 528, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ProvinciaCircunscripcion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 385, 840 - 512, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NacionalCircunscripcion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 385, 840 - 528, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleCircunscripcion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 165, 840 - 545, 0.0f);
 
+            ////// II
+
+            if (request.InfoPorDeclararOficio == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 191, 840 - 617, 0.0f);
+            }
+            else if (request.InfoPorDeclararOficio == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 248, 840 - 617, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 200, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.CentroDePrestacion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 266, 840 - 639, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.OficioOcupacionProfesion}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 172, 840 - 655, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RUCEmpresaOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 458, 840 - 655, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DireccionOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 89, 840 - 672, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DesdeAñoOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 416, 840 - 672, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.HastaAñoOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 520, 840 - 672, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DistritoOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 367, 840 - 706, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.ProvinciaOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 89, 840 - 706, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DepartamentoOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 367, 840 - 690, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.PaisOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 89, 840 - 690, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleOficio}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 164, 840 - 726, 0.0f);
+
+            //PAGINA 2
+
+            if (request.InfoPorDeclararEducacionBasica == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 316, 840 - 56, 0.0f);
+            }
+            else if (request.InfoPorDeclararEducacionBasica == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 373, 840 - 56, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 200, 0.0f);
+            }
+
+            if (request.EstudiosPrimarios == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 53, 840 - 87, 0.0f);
+            }
+            else if (request.EstudiosPrimarios == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 96, 840 - 87, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 87, 0.0f);
+            }
+
+            if (request.EstudiosPrimariosConcluidos == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 223, 840 - 87, 0.0f);
+            }
+            else if (request.EstudiosPrimariosConcluidos == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 259, 840 - 87, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 87, 0.0f);
+            }
+
+            if (request.EstudiosSecundarios == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 312, 840 - 87, 0.0f);
+            }
+            else if (request.EstudiosSecundarios == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 355, 840 - 87, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 87, 0.0f);
+            }
+
+            if (request.EstudiosSecundariosConcluidos == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 499, 840 - 87, 0.0f);
+            }
+            else if (request.EstudiosSecundariosConcluidos == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 538, 840 - 87, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 87, 0.0f);
+            }
+
+            if (request.InfoPorDeclararNoUniversitarios == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 315, 840 - 109, 0.0f);
+            }
+            else if (request.InfoPorDeclararNoUniversitarios == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 373, 840 - 109, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 87, 0.0f);
+            }
+
+            if (request.EstudiosTecnicos == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 182, 840 - 132, 0.0f);
+            }
+            else if (request.EstudiosTecnicos == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 224, 840 - 132, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 87, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NombreCentroEstudiosTecnicos}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 167, 840 - 148, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.CarreraTituloEstudiosTecnicos}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 116, 840 - 163, 0.0f);
+
+            if (request.EstudiosTecnicosConcluidos == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 116, 840 - 180, 0.0f);
+            }
+            else if (request.EstudiosTecnicosConcluidos == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 160, 840 - 180, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 87, 0.0f);
+            }
+
+            if (request.EstudiosNoUniversitarios == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 487, 840 - 132, 0.0f);
+            }
+            else if (request.EstudiosNoUniversitarios == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 533, 840 - 132, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 132, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NombreCentroNoUniversitarios}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 434, 840 - 148, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.CarreraTituloNoUniversitarios}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 381, 840 - 163, 0.0f);
+
+            if (request.NoUniversitariosConcluidos == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 382, 840 - 180, 0.0f);
+            }
+            else if (request.NoUniversitariosConcluidos == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 424, 840 - 180, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 180, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleNoUniversitarios}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 165, 840 - 195, 0.0f);
+
+            if (request.InfoPorDeclararUniversitarios == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 394, 840 - 221, 0.0f);
+            }
+            else if (request.InfoPorDeclararUniversitarios == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 452, 840 - 221, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.EstudiosUniversitarios == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 238, 0.0f);
+            }
+            else if (request.EstudiosUniversitarios == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 235, 840 - 238, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NombreUniversidad}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 147, 840 - 251, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NombreGradoTitulo}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 108, 840 - 267, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.UniversidadAñoObtencion}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 116, 840 - 284, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleUniversitarios}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 323, 840 - 284, 0.0f);
+
+            if (request.UniversidadConcluido == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 482, 840 - 252, 0.0f);
+            }
+            else if (request.UniversidadConcluido == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 525, 840 - 252, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.UniversidadEgresado == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 482, 840 - 267, 0.0f);
+            }
+            else if (request.UniversidadEgresado == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 525, 840 - 267, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.EstudiosPostgrado == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 310, 840 - 310, 0.0f);
+            }
+            else if (request.EstudiosPostgrado == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 354, 840 - 310, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NombreCentroEstudiosPostgrado}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 169, 840 - 333, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.EspecializacionPostgrado}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 111, 840 - 349, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.PostgradoAñoObtencion}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 527, 840 - 366, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoComplePostgrado}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 166, 840 - 383, 0.0f);
+
+            if (request.EspecializacionPostgradoConcluidos == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 482, 840 - 349, 0.0f);
+            }
+            else if (request.EspecializacionPostgradoConcluidos == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 526, 840 - 349, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.EgresadoPostgrado == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 92, 840 - 366, 0.0f);
+            }
+            else if (request.EgresadoPostgrado == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 126, 840 - 366, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.GradoObtenidoMaestro == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 283, 840 - 366, 0.0f);
+            }
+            else if (request.GradoObtenidoMaestro == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 307, 840 - 366, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.GradoObtenidoDoctor == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 385, 840 - 366, 0.0f);
+            }
+            else if (request.GradoObtenidoDoctor == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 411, 840 - 366, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.InfoPorDeclararOtrosEstudiosPostgrado == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 422, 0.0f);
+            }
+            else if (request.InfoPorDeclararOtrosEstudiosPostgrado == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 236, 840 - 422, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.OtrosEstudiosPostgrado == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 222, 840 - 441, 0.0f);
+            }
+            else if (request.OtrosEstudiosPostgrado == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 266, 840 - 441, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.NombreCentroOtrosEstudiosPostgrado}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 464, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.EspecializacionOtrosPostgrado}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 112, 840 - 483, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.GradoOtrosPostgrado}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 77, 840 - 500, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.OtrosPostgradoAñoObtencion}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 120, 840 - 517, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleOtrosPostgrado}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 309, 840 - 517, 0.0f);
+
+            if (request.EspecializacionOtrosPostgradoConcluidos == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 482, 840 - 484, 0.0f);
+            }
+            else if (request.EspecializacionOtrosPostgradoConcluidos == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 526, 840 - 484, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            if (request.EgresadoOtrosPostgrado == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 437, 840 - 500, 0.0f);
+            }
+            else if (request.EgresadoOtrosPostgrado == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 470, 840 - 500, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            ///// IV
+
+            if (request.InfoPorDeclararCargosPartidarios == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 316, 840 - 557, 0.0f);
+            }
+            else if (request.InfoPorDeclararCargosPartidarios == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 373, 840 - 557, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TrayectoriaOrganizacion1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 131, 840 - 576, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TrayectoriaCargo1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 81, 840 - 592, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DesdeAñoCargo1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 93, 840 - 607, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.HastaAñoCargo1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 254, 840 - 607, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleCargo1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 165, 840 - 628, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TrayectoriaOrganizacion2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 397, 840 - 576, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TrayectoriaCargo2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 349, 840 - 592, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DesdeAñoCargo2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 359, 840 - 607, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.HastaAñoCargo2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 519, 840 - 607, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleCargo2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 430, 840 - 628, 0.0f);
+
+            if (request.InfoPorDeclararCargosEleccionPopular == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 316, 840 - 647, 0.0f);
+            }
+            else if (request.InfoPorDeclararCargosEleccionPopular == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 373, 840 - 647, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+
+            if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.presidente)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 47, 840 - 690, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.vicepresidente)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 47, 840 - 702, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.congresista)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 47, 840 - 715, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.parlamentarioandino)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 47, 840 - 728, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.gobernadorregional)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 47, 840 - 740, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.vicegobernadorregional)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 47, 840 - 752, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.consejeroregional)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 47, 840 - 764, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.alcaldeprovincial)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 690, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.alcaldedistrital)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 702, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.alcaldecentropoblado)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 715, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.regidorprovincial)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 728, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.regidordistrital)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 740, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.regidorcentropoblado)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 752, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.diputado)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 764, 0.0f);
+            }
+            else if (request.CargoEleccionPopular1 == (int)CargoEleccionPopularOpciones.senador)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 776, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.presidente)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 690, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.vicepresidente)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 702, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.congresista)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 715, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.parlamentarioandino)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 728, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.gobernadorregional)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 740, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.vicegobernadorregional)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 752, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.consejeroregional)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 764, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.alcaldeprovincial)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 434, 840 - 690, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.alcaldedistrital)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 434, 840 - 702, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.alcaldecentropoblado)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 434, 840 - 715, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.regidorprovincial)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 434, 840 - 728, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.regidordistrital)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 434, 840 - 740, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.regidorcentropoblado)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 434, 840 - 752, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.diputado)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 434, 840 - 764, 0.0f);
+            }
+            else if (request.CargoEleccionPopular2 == (int)CargoEleccionPopularOpciones.senador)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 170, 840 - 776, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TrayectoriaOrganizacionPopular1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 133, 840 - 789, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DesdeAñoCargoPopular1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 94, 840 - 804, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.HastaAñoCargoPopular1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 254, 840 - 804, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleCargoPopular1}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 166, 840 - 820, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TrayectoriaOrganizacionPopular2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 396, 840 - 790, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.DesdeAñoCargoPopular2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 358, 840 - 804, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.HastaAñoCargoPopular2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 520, 840 - 804, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleCargoPopular2}", 2, 9, iTextSharp.text.Element.ALIGN_LEFT, 429, 840 - 820, 0.0f);
+
+
+            /////// V
+
+            if (request.InfoPorDeclararSentencias == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 57, 0.0f);
+            }
+            else if (request.InfoPorDeclararSentencias == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 250, 840 - 57, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasNroExpediente1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 110, 840 - 92, 0.0f);
+
+            DateTime sentenciasFechaFirme1 = DateTime.MinValue;
+            bool formatTransaccion1 = DateTime.TryParse(request.SentenciasFechaFirme1, cultureinfo, System.Globalization.DateTimeStyles.None, out sentenciasFechaFirme1);
+            if (formatTransaccion1)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {sentenciasFechaFirme1.ToString("dd")}", 3, 9, iTextSharp.text.Element.ALIGN_CENTER, 135, 840 - 108, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {sentenciasFechaFirme1.ToString("MM")}", 3, 9, iTextSharp.text.Element.ALIGN_CENTER, 153, 840 - 108, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {sentenciasFechaFirme1.ToString("yyyy")}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 172, 840 - 108, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasOrgano1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 110, 840 - 125, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasDelito1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 110, 840 - 142, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasFallaPena1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 110, 840 - 159, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasNroExpediente2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 375, 840 - 92, 0.0f);
+
+            DateTime sentenciasFechaFirme2 = DateTime.MinValue;
+            bool formatTransaccion2 = DateTime.TryParse(request.SentenciasFechaFirme2, cultureinfo, System.Globalization.DateTimeStyles.None, out sentenciasFechaFirme2);
+            if (formatTransaccion2)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {sentenciasFechaFirme2.ToString("dd")}", 3, 9, iTextSharp.text.Element.ALIGN_CENTER, 399, 840 - 108, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {sentenciasFechaFirme2.ToString("MM")}", 3, 9, iTextSharp.text.Element.ALIGN_CENTER, 418, 840 - 108, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {sentenciasFechaFirme2.ToString("yyyy")}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 437, 840 - 108, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasOrgano2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 375, 840 - 125, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasDelito2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 375, 840 - 142, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasFallaPena2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 375, 840 - 159, 0.0f);
+
+
+            if (request.SentenciasModalidad1 == (int)SentenciasModalidadOpciones.efectiva)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 99, 840 - 176, 0.0f);
+            }
+            else if (request.SentenciasModalidad1 == (int)SentenciasModalidadOpciones.reservadefallo)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 99, 840 - 192, 0.0f);
+            }
+            else if (request.SentenciasModalidad1 == (int)SentenciasModalidadOpciones.suspendida)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 180, 840 - 176, 0.0f);
+            }
+            else if (request.SentenciasModalidad1 == (int)SentenciasModalidadOpciones.otro)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 180, 840 - 192, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasModalidadOtro1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 220, 840 - 192, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            if (request.SentenciasCumplimiento1 == (int)SentenciasCumplimientoOpciones.penacumplida)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 144, 840 - 209, 0.0f);
+            }
+            else if (request.SentenciasCumplimiento1 == (int)SentenciasCumplimientoOpciones.encumplimiento)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 223, 840 - 209, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            if (request.SentenciasModalidad2 == (int)SentenciasModalidadOpciones.efectiva)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 363, 840 - 176, 0.0f);
+            }
+            else if (request.SentenciasModalidad2 == (int)SentenciasModalidadOpciones.reservadefallo)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 363, 840 - 192, 0.0f);
+            }
+            else if (request.SentenciasModalidad2 == (int)SentenciasModalidadOpciones.suspendida)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 445, 840 - 176, 0.0f);
+            }
+            else if (request.SentenciasModalidad2 == (int)SentenciasModalidadOpciones.otro)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 445, 840 - 192, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.SentenciasModalidadOtro2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 485, 840 - 192, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            if (request.SentenciasCumplimiento2 == (int)SentenciasCumplimientoOpciones.penacumplida)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 408, 840 - 209, 0.0f);
+            }
+            else if (request.SentenciasCumplimiento2 == (int)SentenciasCumplimientoOpciones.encumplimiento)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 488, 840 - 209, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+            
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleSentencias}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 164, 840 - 228, 0.0f);
+
+            ////// VI
+
+            if (request.InfoPorDeclararRelacionDeSentencias == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 300, 0.0f);
+            }
+            else if (request.InfoPorDeclararRelacionDeSentencias == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 250, 840 - 300, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+
+
+            if (request.RelacionDeSentenciasMaterialDeDemanda1 == (int)MaterialDemandaOpciones.laboral)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 48, 840 - 332, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda1 == (int)MaterialDemandaOpciones.contractual)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 48, 840 - 349, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda1 == (int)MaterialDemandaOpciones.familia)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 178, 840 - 332, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda1 == (int)MaterialDemandaOpciones.violenciafamiliar)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 178, 840 - 349, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasNroExpediente1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 111, 840 - 367, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasOrganoJudicial1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 111, 840 - 383, 0.0f);
+
+            (string rdsf1Parte1, string rdsf1Parte2) = PdfWorker.DividirOracionSinCortarPalabras(request?.RelacionDeSentenciasFallo1 ?? "", 43);
+            if (!String.IsNullOrEmpty(rdsf1Parte2))
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, rdsf1Parte1, 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 73, 840-400, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, rdsf1Parte2, 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 48, 840-416, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasFallo1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 73, 840-400, 0.0f);
+            }
+
+
+            if (request.RelacionDeSentenciasMaterialDeDemanda2 == (int)MaterialDemandaOpciones.laboral)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 48, 840 - 483, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda2 == (int)MaterialDemandaOpciones.contractual)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 48, 840 - 500, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda2 == (int)MaterialDemandaOpciones.familia)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 178, 840 - 483, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda2 == (int)MaterialDemandaOpciones.violenciafamiliar)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 178, 840 - 500, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasNroExpediente2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 111, 840 - 518, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasOrganoJudicial2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 111, 840 - 533, 0.0f);
+
+            (string rdsf2Parte1, string rdsf2Parte2) = PdfWorker.DividirOracionSinCortarPalabras(request?.RelacionDeSentenciasFallo2 ?? "", 43);
+            if (!String.IsNullOrEmpty(rdsf2Parte2))
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, rdsf2Parte1, 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 73, 840 - 550, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, rdsf2Parte2, 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 48, 840 - 567, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasFallo2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 73, 840 - 550, 0.0f);
+            }
+
+
+
+            if (request.RelacionDeSentenciasMaterialDeDemanda3 == (int)MaterialDemandaOpciones.laboral)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 312, 840 - 332, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda3 == (int)MaterialDemandaOpciones.contractual)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 312, 840 - 349, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda3 == (int)MaterialDemandaOpciones.familia)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 443, 840 - 332, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda3 == (int)MaterialDemandaOpciones.violenciafamiliar)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 443, 840 - 349, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasNroExpediente3}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 374, 840 - 367, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasOrganoJudicial3}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 374, 840 - 383, 0.0f);
+
+            (string rdsf3Parte1, string rdsf3Parte2) = PdfWorker.DividirOracionSinCortarPalabras(request?.RelacionDeSentenciasFallo3 ?? "", 43);
+            if (!String.IsNullOrEmpty(rdsf3Parte2))
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, rdsf3Parte1, 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 339, 840 - 400, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, rdsf3Parte2, 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 416, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasFallo3}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 339, 840 - 400, 0.0f);
+            }
+
+
+            if (request.RelacionDeSentenciasMaterialDeDemanda4 == (int)MaterialDemandaOpciones.laboral)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 312, 840 - 482, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda4 == (int)MaterialDemandaOpciones.contractual)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 312, 840 - 500, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda4 == (int)MaterialDemandaOpciones.familia)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 443, 840 - 482, 0.0f);
+            }
+            else if (request.RelacionDeSentenciasMaterialDeDemanda4 == (int)MaterialDemandaOpciones.violenciafamiliar)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 443, 840 - 500, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 200, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasNroExpediente4}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 374, 840 - 518, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasOrganoJudicial4}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 374, 840 - 533, 0.0f);
+
+            (string rdsf4Parte1, string rdsf4Parte2) = PdfWorker.DividirOracionSinCortarPalabras(request?.RelacionDeSentenciasFallo4 ?? "", 43);
+            if (!String.IsNullOrEmpty(rdsf4Parte2))
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, rdsf4Parte1, 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 339, 840 - 550, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, rdsf4Parte2, 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 313, 840 - 567, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RelacionDeSentenciasFallo4}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 339, 840 - 550, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleRelacionDeSentencias}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 164, 840 - 620, 0.0f);
+
+            ///// VII
+            ///
+
+            if (request.InfoPorDeclararRenuncias == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 686, 0.0f);
+            }
+            else if (request.InfoPorDeclararRenuncias == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 250, 840 - 686, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RenunciasOrgano1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 198, 840 - 718, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RenunciasAñoOrgano1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 520, 840 - 718, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RenunciasComentario1}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 95, 840 - 732, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RenunciasOrgano2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 198, 840 - 749, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.RenunciasAñoOrgano2}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 520, 840 - 750, 5.5f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoCompleRenuncias}", 3, 9, iTextSharp.text.Element.ALIGN_LEFT, 164, 840 - 765, 0.0f);
+
+            ////VIII
+            ///
+
+            if (request.InfoPorDeclararIngresos == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 68, 0.0f);
+            }
+            else if (request.InfoPorDeclararIngresos == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 248, 840 - 68, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosAñoDeclarado}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 109, 840 - 84, 5.5f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosRemuneracionBrutaAnualSectorPublico}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 344, 840 - 105, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosRemuneracionBrutaAnualSectorPrivado}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 429, 840 - 105, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosRemuneracionBrutaAnualTotal}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 514, 840 - 105, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosRentaBrutaAnualSectorPublico}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 344, 840 - 127, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosRentaBrutaAnualSectorPrivado}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 429, 840 - 127, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosRentaBrutaAnualTotal}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 514, 840 - 127, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosOtrosAnualesSectorPublico}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 344, 840 - 177, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosOtrosAnualesSectorPrivado}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 429, 840 - 177, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosOtrosAnualesTotal}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 514, 840 - 177, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.IngresosTotal}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 500, 840 - 198, 0.0f);
+
+            if (request.InfoPorDeclararBienesInmuebles == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 230, 0.0f);
+            }
+            else if (request.InfoPorDeclararBienesInmuebles == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 248, 840 - 230, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleTipo1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 278, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleDireccion1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 111, 840 - 278, 0.0f);
+            if (request.BienInmuebleSunarp1 == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 280, 840 - 278, 0.0f);
+            }
+            else if (request.BienInmuebleSunarp1 == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 293, 840 - 278, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleSunarpPartida1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 307, 840 - 278, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleValor1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 354, 840 - 278, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleValorAutoavaluo1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 405, 840 - 278, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleInfoComple1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 477, 840 - 278, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleTipo2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 295, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleDireccion2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 111, 840 - 295, 0.0f);
+            if (request.BienInmuebleSunarp2 == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 280, 840 - 295, 0.0f);
+            }
+            else if (request.BienInmuebleSunarp2 == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 293, 840 - 295, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 295, 0.0f);
+            }
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleSunarpPartida2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 307, 840 - 295, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleValor2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 354, 840 - 295, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleValorAutoavaluo2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 405, 840 - 295, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleInfoComple2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 477, 840 - 295, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleTipo3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 312, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleDireccion3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 111, 840 - 312, 0.0f);
+            if (request.BienInmuebleSunarp3 == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 280, 840 - 312, 0.0f);
+            }
+            else if (request.BienInmuebleSunarp3 == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 293, 840 - 312, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 312, 0.0f);
+            }
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleSunarpPartida3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 307, 840 - 312, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleValor3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 354, 840 - 312, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleValorAutoavaluo3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 405, 840 - 312, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienInmuebleInfoComple3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 477, 840 - 312, 0.0f);
+
+
+            if (request.InfoPorDeclararBienesMuebles == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 369, 0.0f);
+            }
+            else if (request.InfoPorDeclararBienesMuebles == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 248, 840 - 369, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleVehiculo1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 401, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMueblePlaca1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 159, 840 - 401, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleValor1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 305, 840 - 401, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleInfoComple1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 390, 840 - 401, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleVehiculo2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 417, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMueblePlaca2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 159, 840 - 417, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleValor2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 305, 840 - 417, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleInfoComple2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 390, 840 - 417, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleVehiculo3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 433, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMueblePlaca3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 159, 840 - 433, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleValor3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 305, 840 - 433, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleInfoComple3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 390, 840 - 433, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleVehiculo4}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 449, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMueblePlaca4}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 159, 840 - 449, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleValor4}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 305, 840 - 449, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleInfoComple4}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 390, 840 - 449, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleVehiculo5}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 465, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMueblePlaca5}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 159, 840 - 465, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleValor5}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 305, 840 - 465, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleInfoComple5}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 390, 840 - 465, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.BienMuebleTotal}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 503, 840 - 494, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TitularidadPersonaJuridica}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 580, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TitularidadAcciones}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 211, 840 - 580, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TitularidadParticipaciones}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 305, 840 - 580, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TitularidadNroAccionesParticipaciones}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 390, 840 - 580, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TitularidadValorNominalTotalAcciones}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 477, 840 - 580, 0.0f);
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.TitularidadInfoComple}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 165, 840 - 603, 0.0f);
+
+            if (request.InfoPorDeclararInfoAdicional == true)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 192, 840 - 650, 0.0f);
+            }
+            else if (request.InfoPorDeclararInfoAdicional == false)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "X", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 249, 840 - 650, 0.0f);
+            }
+            else
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, "", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 272, 840 - 221, 0.0f);
+            }
+
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoAdicional1}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 674, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoAdicional2}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 690, 0.0f);
+            pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $"{request.InfoAdicional3}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 49, 840 - 706, 0.0f);
+
+            DateTime fechaFormularioCompletado = DateTime.MinValue;
+            bool formatTransaccion3 = DateTime.TryParse(request.FechaFormularioCompletado, cultureinfo, System.Globalization.DateTimeStyles.None, out fechaFormularioCompletado);
+            if (formatTransaccion3)
+            {
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaFormularioCompletado.ToString("dd")}", 4, 9, iTextSharp.text.Element.ALIGN_CENTER, 282, 840 - 754, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaFormularioCompletado.ToString("MM")}", 4, 9, iTextSharp.text.Element.ALIGN_CENTER, 302, 840 - 754, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaFormularioCompletado.ToString("yyyy")}", 4, 9, iTextSharp.text.Element.ALIGN_LEFT, 324, 840 - 754, 0.0f);
+                pdfbase64 = PdfWorker.WriteTextInPdf(pdfbase64, $" {fechaFormularioCompletado.ToString("yy")}", 1, 9, iTextSharp.text.Element.ALIGN_LEFT, 538, 840 - 108, 0.0f);
+            }
+
+            //System.IO.File.WriteAllBytes(@"C:\Users\Lenovo IdeapadS340\Downloads\APprueba.pdf", Convert.FromBase64String(pdfbase64));
 
             return pdfbase64;
         }
